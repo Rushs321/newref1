@@ -3,7 +3,7 @@ const DEFAULT_QUALITY = 40;
 
 async function params(req, res) {
   let url = req.query.url;
-  if (!url) return res.send('1wert');
+  if (!url) return res.send('1we23');
 
   req.params.url = decodeURIComponent(url);
   req.params.webp = !req.query.jpeg;
