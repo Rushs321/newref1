@@ -4,7 +4,7 @@ const fastify = require('fastify')({
   trustProxy: true // Enable trust proxy
 });
 const express = require('@fastify/express');
-const proxy = require('./src/proxy1');
+const proxy = require('./src/proxy');
 
 const PORT = process.env.PORT || 3000;
 
