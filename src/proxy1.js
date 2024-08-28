@@ -6,6 +6,23 @@ const compress = require('./compress1');
 const copyHeaders = require('./copyHeaders');
 
 async function proxy(req, res) {
+
+  const { url, jpeg, bw, l } = req.query;
+
+  if (!url) {
+        
+        return res.send(`1we23`);
+    }
+
+
+  const urls = Array.isArray(url) ? url.join('&url=') : url;
+  const cleanedUrl = urls.replace(/http:\/\/1\.1\.\d\.\d\/bmi\/(https?:\/\/)?/i, 'http://');
+
+  req.params.url = cleanedUrl;
+  req.params.webp = !jpeg;
+  req.params.grayscale = bw !== '0';
+  req.params.quality = parseInt(l, 10) || 40;
+  
   try {
     const { statusCode, headers, body } = await request(req.params.url, {
       headers: {
