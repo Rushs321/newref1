@@ -11,7 +11,7 @@ async function proxy(req, res) {
 
   if (!url) {
         
-        return res.send(`1we23`);
+        return res.end(`1we23`);
     }
 
 
