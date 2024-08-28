@@ -8,6 +8,8 @@ const proxy = require('./src/proxy1');
 const PORT = process.env.PORT || 3000;
 
 const app = Fastify({
+  logger: true,
+  disableRequestLogging: false,
   trustProxy: true
 });
 
