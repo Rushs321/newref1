@@ -6,10 +6,10 @@
  */
 const undici = require("undici");
 const pick = require("lodash").pick;
-const shouldCompress = require("./shouldCompress");
-const redirect = require("./redirect");
-const compress = require("./compress");
-const copyHeaders = require("./copyHeaders");
+const shouldCompress = require("./shouldCompress1");
+const redirect = require("./redirect1");
+const compress = require("./compress1");
+const copyHeaders = require("./copyHeaders1");
 
 async function proxy(req, res) {
   /*
