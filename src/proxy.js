@@ -34,6 +34,9 @@ async function proxy(req, res) {
   req.params.webp = !jpeg;
   req.params.grayscale = bw !== '0';
   req.params.quality = parseInt(l, 10) || 40;
+    
+    const randomIP = generateRandomIP();
+    const userAgent = randomUserAgent();
   
   try {
     // Making the request with axios.get
