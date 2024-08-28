@@ -14,8 +14,18 @@ const app = Fastify({
 });
 
 app.get('/', async (req, res) => {
-  await params(req, res);
-  await proxy(req, res);
+  try {
+    
+    await params(req, res);
+    if (res.sent) return;
+
+    await proxy(req, res);
+  } catch (err) {
+    console.error(err);
+    if (!res.sent) {
+      res.status(500).send('Internal Server Error');
+    }
+  }
 });
 
 app.get('/favicon.ico', (req, res) => {
