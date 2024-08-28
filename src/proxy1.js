@@ -2,7 +2,7 @@ const { request } = require('undici');
 const pick = require('lodash').pick;
 const shouldCompress = require('./shouldCompress');
 const redirect = require('./redirect');
-const compress = require('./compress');
+const compress = require('./compress1');
 const copyHeaders = require('./copyHeaders');
 
 async function proxy(req, res) {
