@@ -1,4 +1,8 @@
-const fastify = require('fastify')();
+const fastify = require('fastify')({
+  logger: true,
+  disableRequestLogging: false,
+  trustProxy: true // Enable trust proxy
+});
 const express = require('@fastify/express');
 const proxy = require('./src/proxy');
 
