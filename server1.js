@@ -20,10 +20,10 @@ app.get('/favicon.ico', (req, res) => {
   res.status(204).send();
 });
 
-app.listen(PORT, (err, address) => {
+// Start the server
+  fastify.listen({host: '0.0.0.0' , port: PORT }, function (err, address) {
   if (err) {
-    console.error(err);
-    process.exit(1);
+    fastify.log.error(err)
+    process.exit(1)
   }
-  console.log(`Listening on ${address}`);
 });
