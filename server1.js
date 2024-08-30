@@ -1,41 +1,13 @@
 #!/usr/bin/env node
 'use strict';
-const Fastify = require('fastify');
+const app = require('express')();
 
-const params = require('./src/params');
-const proxy = require('./src/proxy1');
 
-const PORT = process.env.PORT || 3000;
+const proxy = require('./src/proxy');
 
-const app = Fastify({
-  logger: true,
-  disableRequestLogging: false,
-  trustProxy: true
-});
+const PORT = process.env.PORT || 8080;
 
-app.get('/', async (req, res) => {
-  try {
-    
-    await params(req, res);
-    if (res.sent) return;
-
-    await proxy(req, res);
-  } catch (err) {
-    console.error(err);
-    if (!res.sent) {
-      res.status(500).send('Internal Server Error');
-    }
-  }
-});
-
-app.get('/favicon.ico', (req, res) => {
-  res.status(204).send();
-});
-
-// Start the server
-  app.listen({host: '0.0.0.0' , port: PORT }, function (err, address) {
-  if (err) {
-    fastify.log.error(err)
-    process.exit(1)
-  }
-});
+app.enable('trust proxy');
+app.get('/', proxy);
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
