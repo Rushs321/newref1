@@ -1,6 +1,6 @@
 const fastify = require('fastify')({
   logger: true,
-  disableRequestLogging: true,
+  disableRequestLogging: false,
   trustProxy: true
 });
 const express = require('@fastify/express');
