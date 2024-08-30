@@ -1,4 +1,4 @@
-const axios = require('axios');
+const fetch = require('node-fetch');
 const pick = require('lodash').pick;
 const { generateRandomIP, randomUserAgent } = require('./user.js');
 const shouldCompress = require('./shouldCompress');
@@ -18,12 +18,10 @@ function randomVia() {
     return viaHeaders[index];
 }
 
-
 async function proxy(req, res) {
 
   const { url, jpeg, bw, l } = req.query;
   if (!url) {
-
         return res.end(`1we23`);
   }
   
@@ -35,46 +33,48 @@ async function proxy(req, res) {
   req.params.grayscale = bw !== '0';
   req.params.quality = parseInt(l, 10) || 40;
 
-    const randomIP = generateRandomIP();
-    const userAgent = randomUserAgent();
+  const randomIP = generateRandomIP();
+  const userAgent = randomUserAgent();
   
-  
-    // Making the request with axios.get
-    const axiosResponse = await axios.get(req.params.url, {
+  try {
+    // Making the request with fetch
+    const fetchResponse = await fetch(req.params.url, {
       headers: {
         ...pick(req.headers, ["cookie", "dnt", "referer"]),
         'user-agent': userAgent,
         'x-forwarded-for': randomIP,
         'via': randomVia(),
       },
-      responseType: 'stream', // To handle streaming data
-      timeout: 10000,
-      maxRedirects: 5,
+      timeout: 10000, // node-fetch timeout option (requires custom timeout handling)
+      redirect: 'follow', // follow redirects automatically
     });
 
     // Handle non-2xx responses
-    if (axiosResponse.status >= 400) {
+    if (!fetchResponse.ok) {
       return redirect(req, res);
     }
 
     // Copy headers from the response to our response
-    copyHeaders(axiosResponse, res);
+    copyHeaders(fetchResponse, res);
 
     // Set headers for the response
     res.setHeader("content-encoding", "identity");
-    req.params.originType = axiosResponse.headers["content-type"] || "";
-    req.params.originSize = axiosResponse.headers["content-length"] || "0";
+    req.params.originType = fetchResponse.headers.get("content-type") || "";
+    req.params.originSize = fetchResponse.headers.get("content-length") || "0";
 
     if (shouldCompress(req)) {
       // Compress the image
-      return compress(req, res, axiosResponse.data);
+      return compress(req, res, fetchResponse.body);
     } else {
       // Directly pipe the response stream
       res.setHeader("x-proxy-bypass", 1);
-      res.setHeader("content-length", axiosResponse.headers["content-length"] || "0");
-      axiosResponse.data.pipe(res);
+      res.setHeader("content-length", fetchResponse.headers.get("content-length") || "0");
+      fetchResponse.body.pipe(res);
     }
-  
+  } catch (error) {
+    // Handle errors (e.g., network issues)
+    return redirect(req, res);
+  }
 }
 
 module.exports = proxy;
