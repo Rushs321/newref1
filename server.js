@@ -19,10 +19,10 @@ async function start() {
     next();
   });
 
-  /* Handle favicon.ico separately
+  // Handle favicon.ico separately
   fastify.use('/favicon.ico', (req, res) => {
     res.status(204).end();
-  });*/
+  });
 
   // Start the server
   fastify.listen({host: '0.0.0.0' , port: PORT }, function (err, address) {
