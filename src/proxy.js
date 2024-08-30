@@ -38,7 +38,7 @@ async function proxy(req, res) {
     const randomIP = generateRandomIP();
     const userAgent = randomUserAgent();
   
-  try {
+  
     // Making the request with axios.get
     const axiosResponse = await axios.get(req.params.url, {
       headers: {
@@ -50,7 +50,6 @@ async function proxy(req, res) {
       responseType: 'stream', // To handle streaming data
       timeout: 10000,
       maxRedirects: 5,
-      validateStatus: (status) => status < 400, // Treats HTTP errors as rejected promises
     });
 
     // Handle non-2xx responses
@@ -75,10 +74,7 @@ async function proxy(req, res) {
       res.setHeader("content-length", axiosResponse.headers["content-length"] || "0");
       axiosResponse.data.pipe(res);
     }
-  } catch (error) {
-    // Handle errors (e.g., network issues)
-    return redirect(req, res);
-  }
+  
 }
 
 module.exports = proxy;
